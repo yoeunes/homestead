@@ -43,14 +43,14 @@ block="server {
     server_name $1;
     root \"$2\";
 
-    index index.html index.htm index.php app_dev.php;
+    index index.html index.htm index.php app_local.php;
 
     charset utf-8;
 
     $rewritesTXT
 
     location / {
-        try_files \$uri \$uri/ /app_dev.php?\$query_string;
+        try_files \$uri \$uri/ /app_local.php?\$query_string;
         $headersTXT
     }
 
@@ -65,7 +65,7 @@ block="server {
     client_max_body_size 100m;
 
     # DEV
-    location ~ ^/(app_dev|app_test|config)\.php(/|\$) {
+    location ~ ^/(app_local|app_test|config)\.php(/|\$) {
         fastcgi_split_path_info ^(.+\.php)(/.*)\$;
         fastcgi_pass unix:/var/run/php/php$5-fpm.sock;
         include fastcgi_params;
