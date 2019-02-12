@@ -50,4 +50,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.hostmanager.manage_host = true
         config.hostmanager.aliases = settings['sites'].map { |site| site['map'] }
     end
+
+    if Vagrant.has_plugin?("vagrant-cachier")
+      config.cache.scope = :machine
+
+      config.cache.synced_folder_opts = {
+        type: :nfs,
+        mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+      }
+
+      config.cache.enable :generic, {
+        "/Users/yoeunes/code/apittp/cache"  => { cache_dir: "/home/vagrant/apittp/cache" },
+        "/Users/yoeunes/code/apittp/logs"   => { cache_dir: "/home/vagrant/apittp/logs" },
+        "/Users/yoeunes/code/apittp/vendor" => { cache_dir: "/home/vagrant/apittp/vendor" },
+      }
+    end
 end
