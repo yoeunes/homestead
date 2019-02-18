@@ -208,8 +208,8 @@ class Homestead
     end
 
     if settings.include? 'sites'
-      socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
-      settings['sites'].unshift(socket)
+      # socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
+      # settings['sites'].unshift(socket)
 
       settings['sites'].each do |site|
 
@@ -414,7 +414,7 @@ class Homestead
 
     # Configure All Of The Configured Databases
     if settings.has_key?('databases')
-      settings['databases'].unshift('socket_wrench')
+      # settings['databases'].unshift('socket_wrench')
 
       settings['databases'].each do |db|
         config.vm.provision 'shell' do |s|
@@ -525,10 +525,10 @@ class Homestead
     # Turn off CFQ scheduler idling https://github.com/laravel/homestead/issues/896
     if settings.has_key?('disable_cfq')
       config.vm.provision 'shell' do |s|
-        s.inline = 'sudo echo 0 >/sys/block/sda/queue/iosched/slice_idle'
+        s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/slice_idle"'
       end
       config.vm.provision 'shell' do |s|
-        s.inline = 'sudo echo 0 >/sys/block/sda/queue/iosched/group_idle'
+        s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/group_idle"'
       end
     end
   end
