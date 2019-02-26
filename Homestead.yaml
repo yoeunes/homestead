@@ -1,0 +1,63 @@
+ip: "192.168.10.10"
+memory: 1024
+cpus: 1
+provider: virtualbox
+#minio: true
+
+authorize: ~/.ssh/id_rsa.pub
+
+keys:
+    - ~/.ssh/id_rsa
+
+folders:
+    - map: ~/code/home
+      to: /home/vagrant/home
+      type: "rsync"
+      options:
+          rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
+          rsync__exclude: [".git", ".idea", "node_modules", "storage"]
+
+    - map: ~/code/apittp
+      to: /home/vagrant/apittp
+      type: "rsync"
+      options:
+          rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
+          rsync__exclude: [".git", ".idea", "var"]
+
+sites:
+    - map: local.tamtam.pro
+      to: /home/vagrant/home/public
+      php: "7.2"
+
+    - map: local.api.tamtam.pro
+      to: /home/vagrant/apittp/web
+      type: "symfony2"
+      php: "7.2"
+
+databases:
+    - tamtam_dev
+    - tamtam_uat
+    - tamtam_prod
+
+#buckets:
+#    - name: tamtam
+#      policy: public
+
+# ports:
+#     - send: 50000
+#       to: 5000
+#     - send: 7777
+#       to: 777
+#       protocol: udp
+
+#blackfire:
+#    - id: 29e997c0-99e5-4ba0-a754-c2e5f894838a
+#      token: 0f4bcc0a8d7b5a629297ca94b5c5a24e9519351849a5eb7d60fff63df6922269
+#      client-id: 9e2a3d82-20c0-417c-91a2-a5ee1fde73c3
+#      client-token: d3868fd1b1abb42441f9f52eb8995f281caf7ac3089e3076d19860907f0649c3
+
+# zray:
+#  If you've already freely registered Z-Ray, you can place the token here.
+#     - email: foo@bar.com
+#       token: foo
+#  Don't forget to ensure that you have 'zray: "true"' for your site.

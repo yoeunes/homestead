@@ -1,0 +1,427 @@
+alias h='cd ~'
+alias c='clear'
+alias art=artisan
+
+alias phpspec='vendor/bin/phpspec'
+alias phpunit='vendor/bin/phpunit'
+alias serve=serve-laravel
+
+alias xoff='sudo phpdismod -s cli xdebug'
+alias xon='sudo phpenmod -s cli xdebug'
+
+alias nrd="npm run dev"
+alias nrw="npm run watch"
+alias nrwp="npm run watch-poll"
+alias nrh="npm run hot"
+alias nrp="npm run production"
+
+alias yrd="yarn run dev"
+alias yrw="yarn run watch"
+alias yrwp="yarn run watch-poll"
+alias yrh="yarn run hot"
+alias yrp="yarn run production"
+
+alias home="cd ~/home"
+alias apittp="cd ~/apittp"
+
+alias api="cd ~/apittp/src/TTP/ApiBundle"
+alias blog="cd ~/apittp/src/TTP/BlogBundle"
+alias event="cd ~/apittp/src/TTP/EventBundle"
+alias mailer="cd ~/apittp/src/TTP/MailerBundle"
+alias mailing="cd ~/apittp/src/TTP/MailingBundle"
+alias payment="cd ~/apittp/src/TTP/PaymentBundle"
+alias rbac="cd ~/apittp/src/TTP/RbacBundle"
+alias survey="cd ~/apittp/src/TTP/SurveyBundle"
+alias talk="cd ~/apittp/src/TTP/TalkBundle"
+alias wtb="cd ~/apittp/src/TTP/WtbBundle"
+alias media="cd ~/apittp/src/TTP/MediaBundle"
+alias billing="cd ~/code/apittp/src/TTP/BillingBundle"
+
+alias update="composer global update; brew update; brew upgrade"
+alias histg="history | grep"
+
+alias sshprod='ssh -i ~/.ssh/prod-server.pem ec2-user@api2.tamtam.pro'
+alias sshdev='ssh -i ~/.ssh/dev-server.pem ec2-user@dev2.api.tamtam.pro'
+alias sshuat='ssh -i ~/.ssh/uat-server.pem ec2-user@uat2.api.tamtam.pro'
+
+alias aliases='atom -a ~/.bash_aliases'
+alias save_aliases='source ~/.bash_aliases'
+alias save_zshrc='source ~/.zshrc'
+
+alias phpcs="vendor/bin/phpcs"
+alias phpcbf="vendor/bin/phpcbf"
+alias phpmd='vendor/bin/phpmd'
+alias phpcpd="vendor/bin/phpcpd"
+
+alias aphpcpd="vendor/bin/phpcpd --names-exclude=*Test.php src/"
+alias aphpmd='vendor/bin/phpmd src/TTP/ApiBundle --exclude "Tests" text unusedcode,controversial'
+
+alias phpunit="vendor/bin/phpunit"
+
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+
+alias hostfile="sudo atom -a /etc/hosts"
+
+alias dsu='bin/console doctrine:schema:update'
+alias nah='git reset --hard;git clean -df'
+alias copyssh="pbcopy < $HOME/.ssh/id_rsa.pub"
+alias reloadcli="source $HOME/.zshrc"
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+alias scopy="rsync -avz -P -e 'ssh'"
+alias mampmysql="/Applications/MAMP/Library/bin/mysql -u root -proot"
+
+alias clearapilogs='sudo rm -rf /Users/yoeunes/apittp/var/logs/*'
+alias clearhomelogs=': > storage/logs/laravel.log'
+
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+alias top="sudo htop"
+alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules,vendor"
+alias help='tldr'
+
+alias storageprod='rsync -r --info=progress2 --stats --ignore-existing -a -h -e "ssh -i ~/.ssh/prod-server.pem"  ec2-user@api2.tamtam.pro:/home/ec2-user/plateforme/api/storage ~/apittp/web'
+alias storageuat='rsync -r --info=progress2 --stats --ignore-existing -a -h -e "ssh -i ~/.ssh/uat-server.pem"  ec2-user@uat2.api.tamtam.pro:/home/ec2-user/plateforme/api/storage ~/apittp/web'
+alias storagedev='rsync -r --info=progress2 --stats --ignore-existing -a -h -e "ssh -i ~/.ssh/dev-server.pem"  ec2-user@dev2.api.tamtam.pro:/home/ec2-user/plateforme/api/storage ~/apittp/web'
+
+alias resup="sudo supervisorctl -c /usr/local/etc/supervisord.ini reread && sudo supervisorctl -c /usr/local/etc/supervisord.ini update"
+alias supconf="open /usr/local/etc/supervisor.d"
+
+alias subinit='git submodule update --init --recursive'
+alias subnah="git submodule foreach --recursive 'git reset --hard;git clean -df || :'"
+alias subcheckout='git submodule foreach --recursive git checkout'
+alias subpull='git submodule foreach --recursive git pull origin'
+
+export SSH_KEY_PATH="~/.ssh/rsa_id"
+export EDITOR=nano
+export SYMFONY_ENV=local
+export SYMFONY_DEBUG=true
+export GPG_TTY=$(tty)
+
+function homestead() {
+    ( cd ~/Homestead && vagrant $* )
+}
+
+function subcheckout() {
+  branch=${1:-develop}
+	default=${2}
+
+  if [[ ! -d .git ]]; then
+		echo "not a git repo"
+		return 1
+	fi;
+
+	if ! [[ `git submodule status` ]]; then
+		echo 'not submodule'
+		return 1
+	fi
+
+	submodules=($(git config --file .gitmodules --get-regexp path | awk '{ print $2 }'))
+
+	currentDirectory=$(pwd)
+
+	for submodule in "${submodules[@]}"
+	do
+		printf "\n\nEntering '$submodule'\n"
+		cd "$currentDirectory/$submodule"
+
+		if [[ $(git rev-parse --verify --quiet ${branch}) ]]; then
+			git checkout ${branch}
+		elif ! [[ -z $default ]] && [[ $(git rev-parse --verify --quiet ${default}) ]]; then
+			git checkout ${default}
+		fi
+	done
+
+  cd "$currentDirectory"
+}
+
+function subpull() {
+	branch=${1:-develop}
+
+  if [[ ! -d .git ]]; then
+		echo "not a git repo"
+		return 1
+	fi;
+
+	if ! [[ `git submodule status` ]]; then
+		echo 'not submodule'
+		return 1
+	fi
+
+	submodules=($(git config --file .gitmodules --get-regexp path | awk '{ print $2 }'))
+
+	currentDirectory=$(pwd)
+
+	for submodule in "${submodules[@]}"
+	do
+		printf "\n\nEntering '$submodule'\n"
+		cd "$currentDirectory/$submodule"
+		git pull origin $branch
+	done
+
+  cd "$currentDirectory"
+}
+
+composer-link() {
+    composer config repositories.local '{"type": "path", "url": "'$1'"}' --file composer.json
+}
+
+function signmycommits() {
+  git filter-branch --commit-filter 'if [ "$GIT_COMMITTER_EMAIL" = "younes.khoubza@gmail.com" ];
+  then git commit-tree -S "$@";
+  else git commit-tree "$@";
+  fi' HEAD
+}
+
+function artisan() {
+    php artisan "$@"
+}
+
+function dusk() {
+    pids=$(pidof /usr/bin/Xvfb)
+
+    if [ ! -n "$pids" ]; then
+        Xvfb :0 -screen 0 1280x960x24 &
+    fi
+
+    php artisan dusk "$@"
+}
+
+function php71() {
+    sudo update-alternatives --set php /usr/bin/php7.1
+    sudo update-alternatives --set php-config /usr/bin/php-config7.1
+    sudo update-alternatives --set phpize /usr/bin/phpize7.1
+}
+
+function php72() {
+    sudo update-alternatives --set php /usr/bin/php7.2
+    sudo update-alternatives --set php-config /usr/bin/php-config7.2
+    sudo update-alternatives --set phpize /usr/bin/phpize7.2
+}
+
+function php73() {
+    sudo update-alternatives --set php /usr/bin/php7.3
+    sudo update-alternatives --set php-config /usr/bin/php-config7.3
+    sudo update-alternatives --set phpize /usr/bin/phpize7.3
+}
+
+function serve-apache() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-apache.sh
+        sudo bash /vagrant/scripts/serve-apache.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-apache domain path"
+    fi
+}
+
+function serve-laravel() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-laravel.sh
+        sudo bash /vagrant/scripts/serve-laravel.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve domain path"
+    fi
+}
+
+function serve-proxy() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo dos2unix /vagrant/scripts/serve-proxy.sh
+        sudo bash /vagrant/scripts/serve-proxy.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-proxy domain port"
+    fi
+}
+
+function serve-silverstripe() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-silverstripe.sh
+        sudo bash /vagrant/scripts/serve-silverstripe.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-silverstripe domain path"
+    fi
+}
+
+function serve-spa() {
+  if [[ "$1" && "$2" ]]
+  then
+    sudo bash /vagrant/scripts/create-certificate.sh "$1"
+    sudo dos2unix /vagrant/scripts/serve-spa.sh
+    sudo bash /vagrant/scripts/serve-spa.sh "$1" "$2" 80 443 "${3:-7.1}"
+  else
+    echo "Error: missing required parameters."
+    echo "Usage: "
+    echo "  serve-spa domain path"
+  fi
+}
+
+function serve-statamic() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-statamic.sh
+        sudo bash /vagrant/scripts/serve-statamic.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-statamic domain path"
+    fi
+}
+
+function serve-symfony2() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-symfony2.sh
+        sudo bash /vagrant/scripts/serve-symfony2.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-symfony2 domain path"
+    fi
+}
+
+function serve-symfony4() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-symfony4.sh
+        sudo bash /vagrant/scripts/serve-symfony4.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-symfony4 domain path"
+    fi
+}
+
+function serve-pimcore() {
+    if [[ "$1" && "$2" ]]
+    then
+        sudo bash /vagrant/scripts/create-certificate.sh "$1"
+        sudo dos2unix /vagrant/scripts/serve-pimcore.sh
+        sudo bash /vagrant/scripts/serve-pimcore.sh "$1" "$2" 80 443 "${3:-7.1}"
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  serve-pimcore domain path"
+    fi
+}
+
+function share() {
+    if [[ "$1" ]]
+    then
+        ngrok http ${@:2} -host-header="$1" 80
+    else
+        echo "Error: missing required parameters."
+        echo "Usage: "
+        echo "  share domain"
+        echo "Invocation with extra params passed directly to ngrok"
+        echo "  share domain -region=eu -subdomain=test1234"
+    fi
+}
+
+function flip() {
+    sudo bash /vagrant/scripts/flip-webserver.sh
+}
+
+function __has_pv() {
+    $(hash pv 2>/dev/null);
+
+    return $?
+}
+
+function __pv_install_message() {
+    if ! __has_pv; then
+        echo $1
+        echo "Install pv with \`sudo apt-get install -y pv\` then run this command again."
+        echo ""
+    fi
+}
+
+function dbexport() {
+    FILE=${1:-/vagrant/mysqldump.sql.gz}
+
+    # This gives an estimate of the size of the SQL file
+    # It appears that 80% is a good approximation of
+    # the ratio of estimated size to actual size
+    SIZE_QUERY="select ceil(sum(data_length) * 0.8) as size from information_schema.TABLES"
+
+    __pv_install_message "Want to see export progress?"
+
+    echo "Exporting databases to '$FILE'"
+
+    if __has_pv; then
+        ADJUSTED_SIZE=$(mysql --vertical -uhomestead -psecret -e "$SIZE_QUERY" 2>/dev/null | grep 'size' | awk '{print $2}')
+        HUMAN_READABLE_SIZE=$(numfmt --to=iec-i --suffix=B --format="%.3f" $ADJUSTED_SIZE)
+
+        echo "Estimated uncompressed size: $HUMAN_READABLE_SIZE"
+        mysqldump -uhomestead -psecret --all-databases --skip-lock-tables --routines 2>/dev/null | pv  --size=$ADJUSTED_SIZE | gzip > "$FILE"
+    else
+        mysqldump -uhomestead -psecret --all-databases --skip-lock-tables --routines 2>/dev/null | gzip > "$FILE"
+    fi
+
+    echo "Done."
+}
+
+function dbimport() {
+    FILE=${1:-/vagrant/mysqldump.sql.gz}
+
+    __pv_install_message "Want to see import progress?"
+
+    echo "Importing databases from '$FILE'"
+
+    if __has_pv; then
+        pv "$FILE" --progress --eta | zcat | mysql -uhomestead -psecret 2>/dev/null
+    else
+        cat "$FILE" | zcat | mysql -uhomestead -psecret 2>/dev/null
+    fi
+
+    echo "Done."
+}
+
+function xphp() {
+    (php -m | grep -q xdebug)
+    if [[ $? -eq 0 ]]
+    then
+        XDEBUG_ENABLED=true
+    else
+        XDEBUG_ENABLED=false
+    fi
+
+    if ! $XDEBUG_ENABLED; then xon; fi
+
+    php \
+        -dxdebug.remote_host=192.168.10.1 \
+        -dxdebug.remote_autostart=1 \
+        "$@"
+
+    if ! $XDEBUG_ENABLED; then xoff; fi
+}
+
+function update-socket-wrench() {
+    cd /var/www/socket-wrench
+    git pull origin release
+    composer install
+    php artisan migrate --force
+}
+
+function seed-socket-wrench() {
+    cd /var/www/socket-wrench
+    php artisan db:seed
+}
