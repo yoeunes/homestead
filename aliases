@@ -48,8 +48,8 @@ alias aliases='atom -a ~/.bash_aliases'
 alias save_aliases='source ~/.bash_aliases'
 alias save_zshrc='source ~/.zshrc'
 
-alias phpcs="vendor/bin/phpcs"
-alias phpcbf="vendor/bin/phpcbf"
+#alias phpcs="vendor/bin/phpcs"
+#alias phpcbf="vendor/bin/phpcbf"
 alias phpmd='vendor/bin/phpmd'
 alias phpcpd="vendor/bin/phpcpd"
 
