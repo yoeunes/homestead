@@ -175,6 +175,10 @@ function signmycommits() {
   fi' HEAD
 }
 
+function datesync() {
+    sudo service ntp stop && sudo ntpd -gq && sudo service ntp start
+}
+
 function artisan() {
     php artisan "$@"
 }
