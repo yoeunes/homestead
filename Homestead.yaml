@@ -38,6 +38,7 @@ databases:
     - tamtam_dev
     - tamtam_uat
     - tamtam_prod
+    - tamtam_rc
 
 #buckets:
 #    - name: tamtam
