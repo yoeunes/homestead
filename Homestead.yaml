@@ -24,6 +24,20 @@ folders:
           rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
           rsync__exclude: [".git", ".idea", "var"]
 
+    - map: ~/code/rentimo
+      to: /home/vagrant/rentimo
+      type: "rsync"
+      options:
+          rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
+          rsync__exclude: [".git", ".idea", "node_modules", "storage"]
+
+    - map: ~/code/gull
+      to: /home/vagrant/gull
+      type: "rsync"
+      options:
+          rsync__args: ["--verbose", "--archive", "--delete", "-zz"]
+          rsync__exclude: [".git", ".idea", "node_modules", "storage"]
+
 sites:
     - map: local.tamtam.pro
       to: /home/vagrant/home/public
@@ -34,11 +48,20 @@ sites:
       type: "symfony2"
       php: "7.2"
 
+    - map: local.rentimo.pro
+      to: /home/vagrant/rentimo/public
+      php: "7.2"
+
+    - map: local.gull.pro
+      to: /home/vagrant/gull/public
+      php: "7.2"
+
 databases:
     - tamtam_dev
     - tamtam_uat
     - tamtam_prod
     - tamtam_rc
+    - rentimo
 
 #buckets:
 #    - name: tamtam
