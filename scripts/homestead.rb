@@ -105,6 +105,7 @@ class Homestead
       4040 => 4040,
       5432 => 54320,
       8025 => 8025,
+      9600 => 9600,
       27017 => 27017
     }
 
@@ -206,7 +207,7 @@ class Homestead
     if settings.has_key?("crystal") && settings["crystal"]
         config.vm.provision "shell" do |s|
             s.name = "Installing Crystal & Lucky"
-            s.path = scriptDir + "/install-crystal.sh"
+            s.path = script_dir + "/install-crystal.sh"
         end
     end
 
@@ -214,13 +215,18 @@ class Homestead
     if settings.has_key?("zray") && settings["zray"]
         config.vm.provision "shell" do |s|
             s.name = "Installing Zend Z-Ray"
-            s.path = scriptDir + "/install-zray.sh"
+            s.path = script_dir + "/install-zray.sh"
         end
     end
 
     # Install All The Configured Nginx Sites
     config.vm.provision 'shell' do |s|
       s.path = script_dir + '/clear-nginx.sh'
+    end
+    
+    # Clear any Homestead sites and insert markers in /etc/hosts
+    config.vm.provision 'shell' do |s|
+      s.path = script_dir + '/hosts-reset.sh'
     end
 
     if settings.include? 'sites'
@@ -395,11 +401,19 @@ class Homestead
       end
     end
 
+    # Install Docker-CE If Necessary
+    if settings.has_key?("docker") && settings["docker"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Docker-CE"
+            s.path = script_dir + "/install-docker-ce.sh"
+        end
+    end
+
     # Install DotNetCore If Necessary
     if settings.has_key?("dotnetcore") && settings["dotnetcore"]
         config.vm.provision "shell" do |s|
             s.name = "Installing DotNet Core"
-            s.path = scriptDir + "/install-dotnet-core.sh"
+            s.path = script_dir + "/install-dotnet-core.sh"
         end
     end
 
@@ -416,7 +430,7 @@ class Homestead
     if settings.has_key?("golang") && settings["golang"]
         config.vm.provision "shell" do |s|
             s.name = "Installing Go"
-            s.path = scriptDir + "/install-golang.sh"
+            s.path = script_dir + "/install-golang.sh"
         end
     end
 
@@ -466,7 +480,15 @@ class Homestead
     if settings.has_key?("ohmyzsh") && settings["ohmyzsh"]
         config.vm.provision "shell" do |s|
             s.name = "Installing Oh-My-Zsh"
-            s.path = scriptDir + "/install-ohmyzsh.sh"
+            s.path = script_dir + "/install-ohmyzsh.sh"
+        end
+    end
+
+    # Install Python If Necessary
+    if settings.has_key?("python") && settings["python"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Python"
+            s.path = script_dir + "/install-python.sh"
         end
     end
 
@@ -474,15 +496,15 @@ class Homestead
     if settings.has_key?("ruby") && settings["ruby"]
         config.vm.provision "shell" do |s|
             s.name = "Installing Ruby & Rails"
-            s.path = scriptDir + "/install-ruby.sh"
+            s.path = script_dir + "/install-ruby.sh"
         end
     end
 
-    # Install WebDriver & Dust Utils If Necessary
+    # Install WebDriver & Dusk Utils If Necessary
     if settings.has_key?("webdriver") && settings["webdriver"]
         config.vm.provision "shell" do |s|
             s.name = "Installing WebDriver Utilities"
-            s.path = scriptDir + "/install-webdriver.sh"
+            s.path = script_dir + "/install-webdriver.sh"
         end
     end
 
