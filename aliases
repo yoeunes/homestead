@@ -99,6 +99,7 @@ export EDITOR=nano
 export SYMFONY_ENV=local
 export SYMFONY_DEBUG=true
 export GPG_TTY=$(tty)
+export TTP_DATABASE_PORT=3306
 
 function homestead() {
     ( cd ~/Homestead && vagrant $* )

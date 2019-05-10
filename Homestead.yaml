@@ -47,6 +47,9 @@ sites:
       to: /home/vagrant/apittp/web
       type: "symfony2"
       php: "7.2"
+      headers:
+          - key: "Access-Control-Allow-Origin"
+            value: "*"
 
     - map: local.rentimo.pro
       to: /home/vagrant/rentimo/public
@@ -62,6 +65,10 @@ databases:
     - tamtam_prod
     - tamtam_rc
     - rentimo
+
+variables:
+    - key: TTP_DATABASE_PORT
+      value: 3306
 
 #buckets:
 #    - name: tamtam
