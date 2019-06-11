@@ -51,6 +51,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.hostmanager.aliases = settings['sites'].map { |site| site['map'] }
     end
 
+    if Vagrant.has_plugin?('vagrant-notify-forwarder')
+        config.notify_forwarder.enable = true
+    end
+
 #    if Vagrant.has_plugin?("vagrant-cachier")
 #      config.cache.scope = :machine
 #
