@@ -2,14 +2,14 @@
 
 # Check if Openresty has been installed
 
-if [ -f /home/vagrant/.openresty ]
+if [ -f /home/vagrant/.homestead-features/openresty ]
 then
     echo "Openresty already installed."
     exit 0
 fi
 
-touch /home/vagrant/.openresty
-chown -Rf vagrant:vagrant /home/vagrant/.openresty
+touch /home/vagrant/.homestead-features/openresty
+chown -Rf vagrant:vagrant /home/vagrant/.homestead-features
 
 # Install Openresty
 
