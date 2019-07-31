@@ -219,17 +219,17 @@ class Homestead
     if settings.has_key?('features')
       settings['features'].each do |feature|
         feature_name = feature.keys[0]
-        feature_arguments = feature[feature_name]
+        feature_variables = feature[feature_name]
         feature_path = script_dir + "/features/" + feature_name + ".sh"
 
         # Check for boolean parameters
         # Compares against true/false to show that it really means "<feature>: <boolean>"
-        if feature_arguments == false
+        if feature_variables == false
           config.vm.provision "shell", inline: "echo Ignoring feature: #{feature_name} because it is set to false \n"
           next
-        elsif feature_arguments == true
+        elsif feature_variables == true
           # If feature_arguments is true, set it to empty, so it could be passed to script without problem
-          feature_arguments = ""
+          feature_variables = {}
         end
 
         # Check if feature really exists
@@ -241,7 +241,7 @@ class Homestead
         config.vm.provision "shell" do |s|
           s.name = "Installing " + feature_name
           s.path = feature_path
-          s.args = [feature_arguments]
+          s.env = feature_variables
         end
       end
     end
@@ -261,7 +261,11 @@ class Homestead
       # socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
       # settings['sites'].unshift(socket)
 
+      domains = []
+
       settings['sites'].each do |site|
+
+        domains.push(site['map'])
 
         # Create SSL certificate
         config.vm.provision 'shell' do |s|
@@ -316,8 +320,21 @@ class Homestead
             rewrites.gsub! '$', '\$'
           end
 
+          # Convert the site & any options to an array of arguments passed to the
+          # specific site type script (defaults to laravel)
           s.path = script_dir + "/site-types/#{type}.sh"
-          s.args = [site['map'], site['to'], site['port'] ||= http_port, site['ssl'] ||= https_port, site['php'] ||= '7.3', params ||= '', site['xhgui'] ||= '', site['exec'] ||= 'false', headers ||= '', rewrites ||= '']
+          s.args = [
+              site['map'],                # $1
+              site['to'],                 # $2
+              site['port'] ||= http_port, # $3
+              site['ssl'] ||= https_port, # $4
+              site['php'] ||= '7.3',      # $5
+              params ||= '',              # $6
+              site['xhgui'] ||= '',       # $7
+              site['exec'] ||= 'false',   # $8
+              headers ||= '',             # $9
+              rewrites ||= ''             # $10
+          ]
 
           # generate pm2 json config file
           if site['pm2']
@@ -378,6 +395,12 @@ class Homestead
           end
         end
       end
+
+      # config.vm.provision 'shell' do |s|
+      #   s.name = 'Configure Avahi Service'
+      #   s.path = script_dir + '/configure-avahi.sh'
+      #   s.args = domains.join(",")
+      # end
     end
 
     # Configure All Of The Server Environment Variables
@@ -389,13 +412,13 @@ class Homestead
     if settings.has_key?('variables')
       settings['variables'].each do |var|
         config.vm.provision 'shell' do |s|
-           s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/5.6/fpm/pool.d/www.conf"
-            s.args = [var['key'], var['value']]
+          s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/5.6/fpm/pool.d/www.conf"
+          s.args = [var['key'], var['value']]
         end
 
         config.vm.provision 'shell' do |s|
-            s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.0/fpm/pool.d/www.conf"
-            s.args = [var['key'], var['value']]
+          s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.0/fpm/pool.d/www.conf"
+          s.args = [var['key'], var['value']]
         end
 
         config.vm.provision 'shell' do |s|
