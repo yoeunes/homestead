@@ -70,6 +70,11 @@ variables:
     - key: TTP_DATABASE_PORT
       value: 3306
 
+features:
+    - mariadb: false
+    - ohmyzsh: true
+    - webdriver: false
+
 #buckets:
 #    - name: tamtam
 #      policy: public
