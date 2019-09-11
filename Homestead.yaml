@@ -1,8 +1,7 @@
 ip: "192.168.10.10"
-memory: 1024
-cpus: 1
+memory: 2048
+cpus: 2
 provider: virtualbox
-#minio: true
 
 authorize: ~/.ssh/id_rsa.pub
 
@@ -61,27 +60,31 @@ sites:
 
 databases:
     - tamtam_dev
-    - tamtam_uat
-    - tamtam_prod
-    - tamtam_rc
     - rentimo
 
 variables:
     - key: TTP_DATABASE_PORT
       value: 3306
+    - key: TTP_FILESYSTEM_S3_KEY
+      value: homestead
+    - key: TTP_FILESYSTEM_S3_SECRET
+      value: secret
+    - key: TTP_FILESYSTEM_S3_URL
+      value: http://local.api.tamtam.pro:9600
 
 features:
     - mariadb: false
     - ohmyzsh: true
     - webdriver: false
+    - minio: true
 
-#buckets:
-#    - name: tamtam
-#      policy: public
+buckets:
+    - name: tamtam
+      policy: public
 
-# ports:
-#     - send: 50000
-#       to: 5000
+#ports:
+#     - send: 9005
+#       to: 9005
 #     - send: 7777
 #       to: 777
 #       protocol: udp
