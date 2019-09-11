@@ -19,7 +19,7 @@ class Homestead
     config.vm.define settings['name'] ||= 'homestead'
     config.vm.box = settings['box'] ||= 'laravel/homestead'
     unless settings.has_key?('SpeakFriendAndEnter')
-      config.vm.box_version = settings['version'] ||= '>= 8.0.0'
+      config.vm.box_version = settings['version'] ||= '>= 8.1.0'
     end
     config.vm.hostname = settings['hostname'] ||= 'homestead'
 
@@ -518,7 +518,7 @@ class Homestead
     end
 
     # Create Minio Buckets
-    if settings.has_key?('buckets') && settings['minio']
+    if settings.has_key?('buckets') && settings['features'].any? { |feature| feature.include?('minio') }
       settings['buckets'].each do |bucket|
         config.vm.provision 'shell' do |s|
           s.name = 'Creating Minio Bucket: ' + bucket['name']
